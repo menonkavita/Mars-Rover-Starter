@@ -72,12 +72,8 @@ Sets the default value for generatorWatts to 110
             roverProcessCommand.completed = true; 
             roverProcessCommand.roverStatus = roverStatusProperties;  
             roverResults.results.push(roverProcessCommand);         // Pushing task completed status & current rover stats into results array.
-
-            console.log("\n ~~~~~ Rover Results ~~~~~", roverResults);         // Shows task completed but no currrent rover stats
-            //console.log("\n----- Rover Results.results -----", roverResults.results);  // Shows currrent rover stats
-            //console.log("%o", roverResults);
-            
          }
+
          if(aCommand.commandType === 'MOVE'){   // MOVE will work only if rover has NORMAL power. Else set status to false.
 
             let roverProcessCommand = {                            // New Object for processing each Command object
@@ -97,6 +93,10 @@ Sets the default value for generatorWatts to 110
 
          i++;
       }
+      console.log("\n ~~~~~ Rover Results ~~~~~", roverResults);         // Shows task completed but no currrent rover stats
+      console.log("\n----- Rover Results.results -----", roverResults.results);  // Shows currrent rover stats
+      //console.log("%o", roverResults);
+
       return roverResults;            // mesage object should contain message name & results array.
    } // End of receiveMessage()
    
@@ -105,14 +105,14 @@ Sets the default value for generatorWatts to 110
 
 //let commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK'), new Command('MOVE', 9000)];
 //let commands = [new Command('STATUS_CHECK')];
-let commands = [new Command('MOVE', 9000), new Command('MODE_CHANGE', 'LOW_POWER'), new Command('MOVE', 10000), new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK')];  // Move function
+let commands = [new Command('MOVE', 9000), new Command('MODE_CHANGE', 'LOW_POWER'), new Command('MOVE', 10000), new Command('MODE_CHANGE', 'LOW_POWER'), new Command('MODE_CHANGE', 'NORMAL'), new Command('MOVE', 10000), new Command('STATUS_CHECK')];  // Move function
 
-let messageObj = new Message('Test message with three commands', commands);
+let messageObj = new Message('Test message with seven commands', commands);
 let rover = new Rover(98382);    // Passes 98382 as the rover's position.
 let response = rover.receiveMessage(messageObj);
 
 console.log("\nResponse Object: ", response);
-//console.log("\n----- Response Results.results mode -----", response.results[1].roverStatus.mode);   // Gives rover stats (not displayed by response object)
+
 
 
 

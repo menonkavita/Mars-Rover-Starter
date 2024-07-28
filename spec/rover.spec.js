@@ -125,5 +125,20 @@ test("responds with a false completed value when attempting to move in LOW_POWER
 });
 
 
+//test 13:
+/* Test 13: “responds with the position for the move command”
+    1. A MOVE command will update the rover’s position with the position value in the command.
+*/
+
+test('responds with the position for the move command', function(){
+  let objRover = new Rover(2000);
+  let objCommand = [ new Command('MOVE', 9000)];
+  let msgObj = new Message("My Message", objCommand); 
+  expect(objRover.receiveMessage(msgObj).results[0].completed).toBe(true);
+  expect(objRover.position).toBe(msgObj.commands[0].value);
+
+});
+
+
 // end of describe ()
 });
