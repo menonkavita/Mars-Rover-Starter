@@ -27,10 +27,10 @@ describe("Rover class", function() {
 /* Test 8: “response returned by receiveMessage contains the name of the message”
 */
     test("response returned by receiveMessage contains the name of the message", function(){
-    let objRover = new Rover(98382);
-    let objCommand = new Command(new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK'));
-    let msgObj = new Message("My Message", objCommand);
-    expect(objRover.receiveMessage(msgObj).message).toEqual(msgObj.message);
+      let objRover = new Rover(98382);
+      let objCommand = new Command(new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK'));
+      let msgObj = new Message("My Message", objCommand);
+      expect(objRover.receiveMessage(msgObj).message).toEqual(msgObj.message);
     });
 
 // test 9:
@@ -38,12 +38,13 @@ describe("Rover class", function() {
 */
 test("response returned by receiveMessage includes two results if two commands are sent in the message", function(){
 let objRover = new Rover(2000);
-let objCommand = new Command(new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK'));
+let objCommand = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK')];
 //let objCommand = new Command(new Command('STATUS_CHECK'));
 let msgObj = new Message("My Message", objCommand);
 
 let roverReceiveCommandLength = objRover.receiveMessage(msgObj).results.length;
 expect(roverReceiveCommandLength).toEqual(msgObj.commands.length);   
+
 });
 
 
@@ -55,11 +56,71 @@ See the Rover Command Types table for more details.
 */
 test("responds correctly to the status check command", function (){ 
 let objRover = new Rover(2000);
-let objCommand = new Command( new Command('STATUS_CHECK'));
-let msgObj = new Message("My Message", objCommand);
-expect(receiveMessage(msgObj).results.mode).toEqual(objRover.mode)
-expect(receiveMessage(msgObj).results.generatorWatts).toEqual(objRover.generatorWatts)
-expect(receiveMessage(msgObj).results.position).toBe(objRover.position)
+  //let objCommand = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK')];
+  let objCommand = [new Command('STATUS_CHECK')];
+  let msgObj = new Message("My Message", objCommand);
+  expect(objRover.receiveMessage(msgObj).results[0].roverStatus.mode).toEqual(objRover.mode)
+  expect(objRover.receiveMessage(msgObj).results[0].roverStatus.generatorWatts).toEqual(objRover.generatorWatts)
+  expect(objRover.receiveMessage(msgObj).results[0].roverStatus.position).toEqual(objRover.position)
+});
+
+
+// test 11:
+/* Test 11: “responds correctly to the mode change command”
+The test should check the completed property and rover mode for accuracy.
+The rover has two modes that can be passed as values to a mode change command: ‘LOW_POWER’ and ‘NORMAL’.
+*/
+test("responds correctly to mode change command", function(){
+  let objRover = new Rover(2000);
+  let objCommand = [new Command('MODE_CHANGE', 'LOW_POWER')];
+  let msgObj = new Message("My Message", objCommand);  
+  expect(objRover.receiveMessage(msgObj).results[0].completed).toBe(true);
+  //expect(objRover.mode).toBe('LOW_POWER')
+  expect(objRover.mode).toBe(msgObj.commands[0].value)
+  
+  objCommand = [new Command('MODE_CHANGE', 'LOW_POWER')];
+  msgObj = new Message("My Message", objCommand);
+  expect(objRover.receiveMessage(msgObj).results[0].completed).toBe(false);
+  expect(objRover.mode).toBe(msgObj.commands[0].value)
+
+  objCommand = [new Command('MODE_CHANGE', 'NORMAL')];
+  msgObj = new Message("My Message", objCommand);
+  expect(objRover.receiveMessage(msgObj).results[0].completed).toBe(true);
+  expect(objRover.mode).toBe(msgObj.commands[0].value)
+
+  objCommand = [new Command('MODE_CHANGE', 'NORMAL')];
+  msgObj = new Message("My Message", objCommand);
+  expect(objRover.receiveMessage(msgObj).results[0].completed).toBe(false);
+  expect(objRover.mode).toBe(msgObj.commands[0].value)
+});
+
+// test 12:
+/* Test 12: “responds with a false completed value when attempting to move in LOW_POWER mode”
+   The test should check the completed property for accuracy and confirm that the rover’s position did not change.
+    Use the Rover Modes table for guidance on how to handle move commands in different modes.
+*/
+test("responds with a false completed value when attempting to move in LOW_POWER mode", function(){
+  let objRover = new Rover(2000);
+  //let objCommand = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command('MOVE', 9000)];
+  let objCommand = [new Command('MODE_CHANGE', 'LOW_POWER')];
+  let msgObj = new Message("My Message", objCommand);  
+  expect(objRover.receiveMessage(msgObj).results[0].completed).toBe(true);
+  expect(objRover.mode).toBe(msgObj.commands[0].value);
+
+  objCommand = [ new Command('MOVE', 9000)];
+  msgObj = new Message("My Message", objCommand); 
+  expect(objRover.receiveMessage(msgObj).results[0].completed).toBe(false);
+  //expect(objRover.position).toBe(msgObj.commands[0].value);
+
+  objCommand = [new Command('MODE_CHANGE', 'NORMAL')];
+  msgObj = new Message("My Message", objCommand);  
+  expect(objRover.receiveMessage(msgObj).results[0].completed).toBe(true);
+  expect(objRover.mode).toBe(msgObj.commands[0].value);
+
+  objCommand = [ new Command('MOVE', 9000)];
+  msgObj = new Message("My Message", objCommand);  
+  expect(objRover.receiveMessage(msgObj).results[0].completed).toBe(true);
+  expect(objRover.position).toBe(msgObj.commands[0].value);
 
 });
 
