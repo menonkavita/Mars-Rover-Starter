@@ -61,7 +61,7 @@ Sets the default value for generatorWatts to 110
         if(aCommand.commandType === 'STATUS_CHECK'){
             let roverProcessCommand = {
                completed : false
-            };  // Processing each Command object; will have 2 properties - completed, roverStatus
+            };  // Object created to process each Command object; will have 2 properties - completed, roverStatus
 
             let roverStatusProperties = {   // Object made only when command is 'STATUS_CHECK'; Will get contain current values of 3 properties of Rover.
                mode : this.mode,

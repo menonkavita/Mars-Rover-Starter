@@ -36,7 +36,5 @@ test("contains a commands array passed into the constructor as the 2nd argument"
 });
 
 
-
-
 // end of describe    
 });
