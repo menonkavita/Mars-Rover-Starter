@@ -12,8 +12,7 @@ describe("Command class", function() {
 
   
   // test 2:
-  /*
-  Test 2 : Create a second Command test using “constructor sets command type” as the description. This test checks that 
+  /*  Test 2 : Create a second Command test using “constructor sets command type” as the description. This test checks that 
   the constructor in the Command class correctly sets the commandType property in the new object.
   */
  test("constructor sets command type", function(){
@@ -31,10 +30,6 @@ describe("Command class", function() {
   let objCommand = new Command("move", 500);
   expect( objCommand.value).toBe(500);
  });
-
-
-    
-
 
 });
 

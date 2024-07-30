@@ -33,6 +33,7 @@ describe("Rover class", function() {
       expect(objRover.receiveMessage(msgObj).message).toEqual("My Message");
     });
 
+
 // test 9:
 /* Test 9: “response returned by receiveMessage includes two results if two commands are sent in the message”
 */
@@ -104,7 +105,6 @@ test("responds with a false completed value when attempting to move in LOW_POWER
 /* Test 13: “responds with the position for the move command”
     1. A MOVE command will update the rover’s position with the position value in the command.
 */
-
 test('responds with the position for the move command', function(){
   let objRover = new Rover(2000);
   let objCommand = [ new Command('MOVE', 9000)];
