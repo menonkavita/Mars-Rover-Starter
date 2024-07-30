@@ -4,13 +4,9 @@ const Command = require("./command.js")
 
 class Rover {
    // Write code here!
-
    /* constructor(position)
-position is a number representing the rover’s position.
-Sets this.position to position
-Sets this.mode to 'NORMAL'
-Sets the default value for generatorWatts to 110
-   */
+      position is a number representing the rover’s position.
+      Sets this.position to position; Sets this.mode to 'NORMAL'; Sets the default value for generatorWatts to 110 */
 
    constructor(position){
       this.mode = 'NORMAL';
@@ -29,41 +25,38 @@ Sets the default value for generatorWatts to 110
 
    receiveMessage (messageObject){
       let i = 0;
-      
-      //console.log(" messageObject  ", messageObject.commands[0].value);   // TO Be DELETED
-
+   
       let roverResults = {
          message : messageObject.message,
-         results: []                                     // roverResults.results [] is an array of objects to store responses to command objects.
-      };
+         results: []                                                 // roverResults.results [] is an array of objects to store responses
+      };                                                             // to command objects.
 
       while (i < messageObject.commands.length){
          let aCommand = messageObject.commands[i];
                   
          if (aCommand.commandType === 'MODE_CHANGE'){
 
-            let roverProcessCommand = {
+            let roverProcessCommand = {                              // New Object for processing each Command object
                completed : false
-            };                            // New Object for processing each Command object
+            };                            
 
             if (this.mode === aCommand.value){
                roverProcessCommand.completed = false;                // 'MODE_CHANGE' unsuccessful, so status set to 'false'.
             } 
             else{
                this.mode = aCommand.value;
-               roverProcessCommand.completed = true;                // 'MODE_CHANGE' successful, so status set to 'true'.
+               roverProcessCommand.completed = true;                 // 'MODE_CHANGE' successful, so status set to 'true'.
             }
 
-            roverResults.results.push(roverProcessCommand);         // Pushing status into results array.
-            console.log("roverResults.results[0].completed", roverResults.results[0].completed);   // TO Be DELETED
+            roverResults.results.push(roverProcessCommand);          // Pushing status into results array.
         }
          
         if(aCommand.commandType === 'STATUS_CHECK'){
-            let roverProcessCommand = {
+            let roverProcessCommand = {                              // Object created to process each Command object; will have 2 properties - completed, roverStatus
                completed : false
-            };  // Object created to process each Command object; will have 2 properties - completed, roverStatus
+            };  
 
-            let roverStatusProperties = {   // Object made only when command is 'STATUS_CHECK'; Will get contain current values of 3 properties of Rover.
+            let roverStatusProperties = {                            // Object created only when command is 'STATUS_CHECK'; Will get contain current values of 3 properties of Rover.
                mode : this.mode,
                generatorWatts : this.generatorWatts,
                position : this.position
@@ -71,12 +64,11 @@ Sets the default value for generatorWatts to 110
 
             roverProcessCommand.completed = true; 
             roverProcessCommand.roverStatus = roverStatusProperties;  
-            roverResults.results.push(roverProcessCommand);         // Pushing task completed status & current rover stats into results array.
+            roverResults.results.push(roverProcessCommand);          // Pushing task completed status & current rover stats into results array.
          }
 
-         if(aCommand.commandType === 'MOVE'){   // MOVE will work only if rover has NORMAL power. Else set status to false.
-
-            let roverProcessCommand = {                            // New Object for processing each Command object
+         if(aCommand.commandType === 'MOVE'){                        // MOVE will work only if rover has NORMAL power. Else set status to false.
+            let roverProcessCommand = {                              // New Object for processing each Command object
                completed : false
             };
 
@@ -92,26 +84,25 @@ Sets the default value for generatorWatts to 110
          }
 
          i++;
-      }
-      console.log("\n ~~~~~ Rover Results ~~~~~", roverResults);         // Shows task completed but no currrent rover stats
-      console.log("\n----- Rover Results.results -----", roverResults.results);  // Shows currrent rover stats
-      //console.log("%o", roverResults);
+      } // end of While
 
-      return roverResults;            // mesage object should contain message name & results array.
-   } // End of receiveMessage()
+      return roverResults;                                          // mesage object should contain message name & results array.
+   } // end of receiveMessage()
    
 } // end of Rover Class
 
 
-//let commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK'), new Command('MOVE', 9000)];
-//let commands = [new Command('STATUS_CHECK')];
-let commands = [new Command('MOVE', 9000), new Command('MODE_CHANGE', 'LOW_POWER'), new Command('MOVE', 10000), new Command('MODE_CHANGE', 'LOW_POWER'), new Command('MODE_CHANGE', 'NORMAL'), new Command('MOVE', 10000), new Command('STATUS_CHECK')];  // Move function
 
-let messageObj = new Message('Test message with seven commands', commands);
-let rover = new Rover(98382);    // Passes 98382 as the rover's position.
+
+let commands = [ new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK')];   // Move function
+let messageObj = new Message('Test message with Two commands', commands);
+let rover = new Rover(98382);                                                             // Passes 98382 as the rover's position.
 let response = rover.receiveMessage(messageObj);
 
-console.log("\nResponse Object: ", response);
+console.log(JSON.stringify(response, null, 2));
+
+
+
 
 
 
